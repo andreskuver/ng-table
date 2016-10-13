@@ -1,5 +1,6 @@
 (function(angular) {
   'use strict';
+
   angular.module("ngTable", [])
 
   .directive('ngTable', function() {
@@ -8,7 +9,7 @@
       scope: {
         options: '=options',
       },
-      template: 
+      template:
         '<table class="table table-striped table-bordered table-hover">'
         + '<thead>'
         + '<tr>'
@@ -21,21 +22,28 @@
         + '</tr>'
         + '</tbody></table>',
       controller: function($scope, $element, $http){
-        const headers = [];
+
         init();
+
         function init() {
           getData();
         }
 
         function getData() {
-          $http.get($scope.options.url)
-            .then((data) => { 
-              $scope.data = data.data.rows; 
+          if ($scope.options.cbUrl) {
+            $scope.options.cbUrl()
+              .then((data) => {
+                $scope.data = data.rows;
+              });
+          } else {
+            $http.get($scope.options.url)
+              .then((data) => {
+                $scope.data = data.data.rows;
 
-            });
+              });
+          }
         }
       },
     }
   });
 })(window.angular);;
-
